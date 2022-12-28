@@ -1,0 +1,21 @@
+#recipeToolbar, .modal, #xsDropdownMenu, #sDropdownMenu{
+    display: none !important;
+}
+
+nav{
+    display: none !important;
+}
+
+body{
+    font-family: Arial;
+}
+
+h1{
+    font-size: 24px;
+    font-weight:bold;
+}
+
+h2, h3, h4, h5, h6{
+    font-size: 20px;
+    font-weight:bold;
+}
