@@ -26,4 +26,8 @@ class Favorite extends DatabaseObject {
         $result = Favorite::find_by_sql("SELECT * FROM favorites WHERE user_id='{$user}' AND recipe_id='{$recipe}' ");
         return array_shift($result);
     }
+    
+    public static function find_by_recipe_id($recipe_id) {
+        return static::find_by_sql("SELECT * FROM " . static::$table_name . " WHERE recipe_id = {$recipe_id}");
+    }
 }

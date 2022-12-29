@@ -4,9 +4,22 @@ $admin_page = 0;
 require_once("includes/initialize.php");
 require_once("includes/check_login.php");
 
-$dbObject = new DatabaseObject();
-$dbObject->find_by_sql("DELETE FROM favorites WHERE recipe_id IN (SELECT id FROM recipes WHERE trash = 1)");
-$dbObject->find_by_sql("DELETE FROM notes WHERE recipe_id IN (SELECT id FROM recipes WHERE trash = 1)");
-$dbObject->find_by_sql("DELETE FROM recipes WHERE trash = 1");
+$recipes = Recipe::find_recipes_in_trash();
+
+foreach ($recipes as $recipe) {
+    $favorites = Favorite::find_by_recipe_id($recipe->id);
+    foreach ($favorites as $favorite) {
+        $favorite->delete();
+    }
+    
+    $notes = Note::find_by_recipe_id($recipe->id);
+    foreach ($notes as $note) {
+        $note->delete();
+    }
+    
+    $recipe->delete();
+}
+
+$message = "success|Trash can emptied successfully.";
 
 redirect_to("trash_can.php");
