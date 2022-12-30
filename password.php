@@ -3,27 +3,29 @@ $admin_page = 0;
 require_once("includes/initialize.php");
 require_once("includes/check_login.php");
 
-if (filter_input(INPUT_POST, 'submit')) {
-    $current = trim(filter_input(INPUT_POST, 'current'));
-    $new = trim(filter_input(INPUT_POST, 'new'));
-    $confirm = trim(filter_input(INPUT_POST, 'confirm'));
-    
-    $user = User::authenticate(User::find_by_id($session->user_id->id)->username, $current);
+if(!IS_DEMO){
+    if (filter_input(INPUT_POST, 'submit')) {
+        $current = trim(filter_input(INPUT_POST, 'current'));
+        $new = trim(filter_input(INPUT_POST, 'new'));
+        $confirm = trim(filter_input(INPUT_POST, 'confirm'));
 
-    if ($user) {
-        if($new===$confirm){
-            $user->password = password_hash($new, PASSWORD_BCRYPT);
-            if($user->update()){
-                $message = "success|Password updated successfully.";
+        $user = User::authenticate(User::find_by_id($session->user_id->id)->username, $current);
+
+        if ($user) {
+            if($new===$confirm){
+                $user->password = password_hash($new, PASSWORD_BCRYPT);
+                if($user->update()){
+                    $message = "success|Password updated successfully.";
+                } else {
+                    $message = "danger|Your password could not be updated.";
+                }
             } else {
-                $message = "danger|Your password could not be updated.";
+                $message = "danger|Make sure your new passwords match.";
             }
         } else {
-            $message = "danger|Make sure your new passwords match.";
+            // username/password combo was not found in the database
+            $message = "danger|Your credentials were inauthentic.";
         }
-    } else {
-        // username/password combo was not found in the database
-        $message = "danger|Your credentials were inauthentic.";
     }
 }
 
